@@ -1,0 +1,40 @@
+.transparent-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 18px 16px;
+  border-radius: 12px;
+  color: inherit;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transparent-card:focus{outline: none; box-shadow: 0 6px 20px rgba(0,0,0,0.22); transform: translateY(-6px);}
+
+.transparent-card:hover{
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(15,23,42,0.35);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.transparent-card .tc-icon{
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  transition: transform 220ms ease;
+}
+
+.transparent-card:hover .tc-icon{transform: translateY(-3px) scale(1.04)}
+
+.transparent-card .tc-title{margin:0; font-size:1rem; font-weight:600; color: #000}
+.transparent-card .tc-body{margin:0; font-size:0.95rem; color:#000}
+
+
+.why-grid .transparent-card{min-height:94px}
