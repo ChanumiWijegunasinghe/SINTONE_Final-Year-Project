@@ -25,7 +25,7 @@ async function predict(text) { // function that sends the entered text to the ba
     try {
       return await res.json() 
     } catch (parseErr) {
-      const error = new Error('Invalid response from server') // Create an error if the response cannot be read as JSON
+      const error = new Error('Invalid response from server') // Creates an error if the response cannot be read as JSON
       error.status = 'invalid-json' 
       throw error
     }
@@ -82,69 +82,66 @@ function AnalyzePage({ onNavigate, route }) {
   const handleInputChange = (e) => { // Function that runs whenever the user types in the textarea
     const raw = e.target.value // Get the full current input value
     let sinhalaCount = 0 // Track the number of Sinhala characters
-    let filtered = '' // Store the filtered final text
+    let filtered = '' // Stores the filtered final text
 
     for (const ch of raw) { // Check each typed character one by one
-      if (SINHALA_REGEX.test(ch)) { // If the character is Sinhala
-        if (sinhalaCount < MAX_SINHALA) { // Allow it only if the Sinhala limit is not reached
-          filtered += ch // Add the Sinhala character to the filtered text
-          sinhalaCount += 1 // Increase the Sinhala character count
+      if (SINHALA_REGEX.test(ch)) { 
+        if (sinhalaCount < MAX_SINHALA) { 
+          filtered += ch 
+          sinhalaCount += 1 
         } else {
-          // drop extra Sinhala characters beyond the limit
         }
       } else {
-        // keep all non-Sinhala characters (spaces, English, numbers, symbols)
-        filtered += ch // Keep non-Sinhala characters without limiting them
+        // keeping all non-Sinhala characters (spaces, English, numbers, symbols)
+        filtered += ch // keeping non-Sinhala characters without limiting them
       }
     }
 
-    setTextInput(filtered) // Save the filtered input text
-    setInputError('') // Clear any previous error message
+    setTextInput(filtered) // save the filtered input text
+    setInputError('') // clearing any previous error message
 
     // If the input becomes empty (user deleted text), clear previous results
-    if (!filtered.trim()) { // Check if the input is empty after removing spaces
+    if (!filtered.trim()) { 
       setAnalysisResult(null) // Clear the old analysis result
     }
   }
 
   // ================= PASTE HANDLING =================
   const handlePaste = (e) => { // Function that runs when the user pastes text
-    // Grab pasted text
-    const pasted = (e.clipboardData && e.clipboardData.getData('text')) || (window.clipboardData && window.clipboardData.getData('Text')) || '' // Get the pasted text from clipboard
-    if (!pasted) return // Stop if nothing was pasted
+    const pasted = (e.clipboardData && e.clipboardData.getData('text')) || (window.clipboardData && window.clipboardData.getData('Text')) || '' 
+    if (!pasted) return 
 
-    if (analysisResult) { // If a result is already displayed
-      e.preventDefault() // Stop the default paste action
+    if (analysisResult) { 
+      e.preventDefault() 
       
-      let allowedSinhala = MAX_SINHALA // Set how many Sinhala characters can still be accepted
-      let filtered = '' // Store the filtered pasted text
-      for (const ch of pasted) { // Check each pasted character
-        if (SINHALA_REGEX.test(ch)) { // If it is a Sinhala character
-          if (allowedSinhala > 0) { // Allow only if the Sinhala limit is not exceeded
-            filtered += ch // Add the character
-            allowedSinhala -= 1 // Reduce the remaining Sinhala limit
+      let allowedSinhala = MAX_SINHALA 
+      let filtered = '' 
+      for (const ch of pasted) { 
+        if (SINHALA_REGEX.test(ch)) { 
+          if (allowedSinhala > 0) { 
+            filtered += ch 
+            allowedSinhala -= 1 
           }
         } else {
-          filtered += ch // Keep non-Sinhala characters
+          filtered += ch 
         }
       }
 
-      setTextInput(filtered) // Replace the current input with the pasted filtered text
-      setAnalysisResult(null) // Clear the old result because the input changed
-      setInputError('') // Clear any previous error
-      // focus textarea and place caret at end
-      setTimeout(() => { // Wait until the textarea updates
-        const el = textareaRef.current // Get the textarea element
-        if (el) { // Check if the textarea exists
-          el.focus() // Put the cursor back into the textarea
-          el.selectionStart = el.selectionEnd = filtered.length // Place the cursor at the end of the pasted text
+      setTextInput(filtered) 
+      setAnalysisResult(null) 
+      setInputError('') 
+      
+      setTimeout(() => { 
+        const el = textareaRef.current 
+        if (el) { 
+          el.focus() 
+          el.selectionStart = el.selectionEnd = filtered.length 
         }
       }, 0)
-      return // Stop further execution
+      return 
     }
-
-    // Otherwise, perform an insertion respecting the Sinhala limit and current selection
-    e.preventDefault() // Stop the browser’s default paste action
+ 
+    e.preventDefault() 
     const el = textareaRef.current // Get the textarea element
     const selStart = el ? el.selectionStart : 0 // Get the start position of the current selection
     const selEnd = el ? el.selectionEnd : 0 // Get the end position of the current selection
@@ -273,7 +270,7 @@ function AnalyzePage({ onNavigate, route }) {
     setInputError('') // Remove any shown error
   }
 
-  return ( // Start of the page design
+  return ( 
     <div className="analyze-page"> {/* Main wrapper for the analyze page */}
 
       {/* ================= NAVBAR ================= */}
@@ -310,20 +307,20 @@ function AnalyzePage({ onNavigate, route }) {
         </nav>
       </section>
 
-      {/* Hero banner (Features1 image) */}
-      <header className="hero"> {/* Hero/banner section */}
-        <div className="features-banner"> {/* Banner with background image moved to CSS */}
-          <div className="features-banner-inner"> {/* Inner content of the banner */}
-            <h1 className="banner-title"> {/* Main title in the banner */}
-              <span className="typewriter">{displayText}</span> {/* Show animated typewriter text */}
+     
+      <header className="hero"> 
+        <div className="features-banner"> 
+          <div className="features-banner-inner"> 
+            <h1 className="banner-title"> 
+              <span className="typewriter">{displayText}</span> 
             </h1>
-            <p className="banner-sub">Enter a Sinhala text comment below to detect hate speech category and tone</p> {/* Banner description text */}
+            <p className="banner-sub">Enter a Sinhala text comment below to detect hate speech category and tone</p> 
           </div>
         </div>
       </header>
 
       {/* ================= MAIN ================= */}
-      <div className="analyze-wrapper"> {/* Main content wrapper */}
+      <div className="analyze-wrapper"> 
         <div className="analyze-card"> {/* Card container for the analysis section */}
 
           {/* ================= INPUT CARD (textarea + footer) ================= */}
@@ -366,7 +363,7 @@ function AnalyzePage({ onNavigate, route }) {
           </div>
 
           {/* ================= RESULT ================= */}
-          {analysisResult && ( // Show result section only if a result exists
+          {analysisResult && ( 
             <div className="result-container"> {/* Container for result cards */}
 
               <div className="result-card"> {/* Card for category result */}
@@ -400,13 +397,13 @@ function AnalyzePage({ onNavigate, route }) {
 
           {/* ================= SUPPORT CARDS (conditional) ================= */}
           {analysisResult && (() => { // Run this block only when a result exists
-            const cat = (analysisResult.category || '').toString().trim().toLowerCase() // Get category in clean lowercase form
-            const tone = (analysisResult.tone || '').toString().trim().toLowerCase() // Get tone in clean lowercase form
-            const noToneValues = new Set(['no tone', 'notone', 'not tone', '—', '','none']) // Define values that mean no tone
-            const isNeutralNoTone = cat === 'neutral' && noToneValues.has(tone) // Check if result is neutral and has no tone
-            if (isNeutralNoTone) return null // Do not show support section for neutral no-tone results
+            const cat = (analysisResult.category || '').toString().trim().toLowerCase() 
+            const tone = (analysisResult.tone || '').toString().trim().toLowerCase() 
+            const noToneValues = new Set(['no tone', 'notone', 'not tone', '—', '','none']) 
+            const isNeutralNoTone = cat === 'neutral' && noToneValues.has(tone) // Checking if result is neutral and has no tone
+            if (isNeutralNoTone) return null // not showing the support section for neutral no-tone results
 
-            return ( // Show support section for harmful results
+            return ( 
               <section className="support-section"> {/* Section containing support information */}
                 <div className="support-intro"> {/* Intro text for support section */}
                   <div className="header-box"> {/* Header box */}

@@ -19,9 +19,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: none; /* remove rounded box shadow */
+  box-shadow: none; 
   border: 0;
-  height: 40px; /* reduced header height */
+  height: 40px; 
   position: relative;
 }
 

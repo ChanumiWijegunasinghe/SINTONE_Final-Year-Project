@@ -1,11 +1,10 @@
-/* ================= FULL PAGE ================= */
 .analyze-page {
   min-height: 100vh;
   background: #f5f6fa;
   padding-bottom: 64px; /* reserve space for fixed footer */
 }
 
-/* Make the features banner sit below the header on the Analyze page */
+
 .analyze-page .features-banner {
   margin-top: 28px !important;
 }
@@ -14,12 +13,12 @@
 .analyze-wrapper {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* allow vertical flow so page can scroll */
-  padding: 0 20px 120px; /* extra bottom padding to separate from footer */
-  margin-top: -48px; /* pull input card upward */
+  align-items: flex-start; 
+  padding: 0 20px 120px; 
+  margin-top: -48px; 
 }
 
-/* ================= CARD ================= */
+/* ================= ANALYZE CARD ================= */
 .analyze-card {
   width: 100%;
   max-width: 800px;
@@ -130,7 +129,6 @@
   flex-wrap: wrap;
 }
 
-/* New result card style (matches screenshot layout) */
 .result-card {
   flex: 1 1 320px;
   max-width: 420px;
@@ -180,9 +178,6 @@
   font-size: 13px;
   margin-top: 4px;
 }
-
-/* Dark mode tweaks for result cards: ensure values appear white */
-/* dark-mode result-card overrides removed */
 
 .result-card-body {
   padding: 10px 6px 4px 6px;
@@ -246,7 +241,7 @@
   }
 }
 
-/* ================= INPUT CARD (big rounded white box) ================= */
+/* ================= INPUT CARD ================= */
 .input-card {
   width: 100%;
   background: #ffffff;
@@ -292,21 +287,17 @@
   border-radius: 12px;
 }
 
-/* adjust textarea size on larger screens */
+
 @media (min-width: 1024px) {
   .text-input { min-height: 220px; }
 }
 
-/* Support grid responsive adjustments */
 @media (max-width: 700px) {
   .support-grid { grid-template-columns: 1fr; }
   .support-card { max-width: 100%; aspect-ratio: auto; min-height: 120px; }
   .support-intro h2 { text-align: center; }
   .sinhala-title { max-width: 100%; }
 }
-
-/* Dark mode: input card uses darker background */
-/* dark-mode input card styles removed */
 
 /* ================= SUPPORT SECTION ================= */
 .support-section {
@@ -388,7 +379,7 @@
   text-align: center;
 }
 
-/* Sinhala message box — larger padding like the image */
+/* Sinhala message box */
 .sinhala-box {
   width: 100%;
   max-width: 640px;
@@ -400,7 +391,7 @@
   text-align: center;
 }
 
-/* ================= FEATURES BANNER (moved from JSX inline style) ================= */
+/* ================= FEATURES BANNER================= */
 .features-banner {
   background-image: url('../images/Features1.png');
   background-size: cover;
@@ -413,7 +404,7 @@
   justify-content: center;
 }
 
-/* ================= ERROR POPUP (moved from JSX inline style) ================= */
+/* ================= ERROR POPUP ================= */
 .error-popup {
   position: fixed;
   right: 20px;
@@ -459,7 +450,7 @@
   width: 100%;
   max-width: 300px;
   
-  background: rgba(255,255,255,0.55); /* semi-transparent */
+  background: rgba(255,255,255,0.55); 
   border: 1px solid rgba(15,23,42,0.06);
   border-radius: 12px;
   padding: 36px;
@@ -468,7 +459,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start; /* ⬅️ meka change kala */
+  justify-content: flex-start; 
 }
 
 .support-card:first-child {

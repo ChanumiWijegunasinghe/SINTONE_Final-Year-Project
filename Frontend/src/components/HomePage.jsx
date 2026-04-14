@@ -101,7 +101,6 @@ function HomePage({ onNavigate, route }) {
           <section className="section cta-section">
             <div className="container text-center">
               <h3>Ready to Explore the Features of SINTONE?</h3>
-              {/*<p>Discover the features of SINTONE</p>*/}
               <button className="cta" onClick={() => onNavigate('features')}>Go to Features →</button>
             </div>
           </section>
