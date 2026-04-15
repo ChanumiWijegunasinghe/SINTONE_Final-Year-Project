@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import '../assets/css/HomePage.css' // Import styles for the home page
 import '../assets/css/AnalyzePage.css' // Import styles specific to the analyze page
 import Logo from '../assets/images/logo.png' // Import the website logo image
-// Features banner background moved to CSS (AnalyzePage.css)
 import Footer from './Footer' // Import the Footer component
 
 // ================= API CALL =================
@@ -142,162 +141,162 @@ function AnalyzePage({ onNavigate, route }) {
     }
  
     e.preventDefault() 
-    const el = textareaRef.current // Get the textarea element
-    const selStart = el ? el.selectionStart : 0 // Get the start position of the current selection
-    const selEnd = el ? el.selectionEnd : 0 // Get the end position of the current selection
+    const el = textareaRef.current 
+    const selStart = el ? el.selectionStart : 0 
+    const selEnd = el ? el.selectionEnd : 0 
 
-    const before = textInput.slice(0, selStart) // Get text before the selected area
-    const after = textInput.slice(selEnd) // Get text after the selected area
+    const before = textInput.slice(0, selStart) 
+    const after = textInput.slice(selEnd) 
 
-    const existingSinhala = countSinhala(before + after) // Count Sinhala characters that will remain after paste
-    let remainingSinhala = Math.max(0, MAX_SINHALA - existingSinhala) // Calculate how many Sinhala characters can still be pasted
+    const existingSinhala = countSinhala(before + after) 
+    let remainingSinhala = Math.max(0, MAX_SINHALA - existingSinhala) 
 
-    let filteredPaste = '' // Store the filtered pasted text
-    for (const ch of pasted) { // Check each pasted character
-      if (SINHALA_REGEX.test(ch)) { // If it is Sinhala
-        if (remainingSinhala > 0) { // Allow only if space is still available
-          filteredPaste += ch // Add the Sinhala character
-          remainingSinhala -= 1 // Reduce the remaining allowed Sinhala count
+    let filteredPaste = '' 
+    for (const ch of pasted) { 
+      if (SINHALA_REGEX.test(ch)) { 
+        if (remainingSinhala > 0) { 
+          filteredPaste += ch 
+          remainingSinhala -= 1 
         }
       } else {
         filteredPaste += ch // Keep non-Sinhala characters
       }
     }
 
-    const newValue = before + filteredPaste + after // Build the new textarea value with the pasted text inserted
-    setTextInput(newValue) // Save the updated text
-    setInputError('') // Clear any previous error
+    const newValue = before + filteredPaste + after 
+    setTextInput(newValue) 
+    setInputError('') 
 
-    // restore caret to end of inserted content
-    setTimeout(() => { // Wait until the textarea value updates
-      const el2 = textareaRef.current // Get the textarea element again
+  
+    setTimeout(() => { 
+      const el2 = textareaRef.current 
       if (el2) { // Check if it exists
-        const pos = (before + filteredPaste).length // Calculate where the cursor should be placed
+        const pos = (before + filteredPaste).length 
         el2.focus() // Focus the textarea
-        el2.selectionStart = el2.selectionEnd = pos // Place the cursor right after the inserted text
+        el2.selectionStart = el2.selectionEnd = pos 
       }
     }, 0)
   }
 
   // ================= TYPING AFTER RESULTS =================
-  const handleKeyDown = (e) => { // Function that runs when a key is pressed inside the textarea
-    if (!analysisResult) return // Do nothing if there is no result shown
+  const handleKeyDown = (e) => { 
+    if (!analysisResult) return 
 
-    // ignore modifier combos
-    if (e.ctrlKey || e.metaKey || e.altKey) return // Ignore shortcut combinations like Ctrl+C or Ctrl+V
+  
+    if (e.ctrlKey || e.metaKey || e.altKey) return 
 
-    const k = e.key // Get the pressed key
-    // If this is a printable single character (including space), replace input
-    if (k.length === 1 || k === ' ' || k === 'Enter') { // Check if the key is a normal text key
-      e.preventDefault() // Stop the default typing action
+    const k = e.key 
+ 
+    if (k.length === 1 || k === ' ' || k === 'Enter') { 
+      e.preventDefault()
 
-      // Insert the pressed key while respecting Sinhala limit
-      let allowedSinhala = MAX_SINHALA // Reset the Sinhala limit
-      let filtered = '' // Store the filtered key value
-      for (const ch of k) { // Check each character in the pressed key
-        if (SINHALA_REGEX.test(ch)) { // If it is Sinhala
-          if (allowedSinhala > 0) { // Allow it only if the Sinhala limit allows
-            filtered += ch // Add the Sinhala character
-            allowedSinhala -= 1 // Reduce remaining limit
+      
+      let allowedSinhala = MAX_SINHALA 
+      let filtered = '' 
+      for (const ch of k) { 
+        if (SINHALA_REGEX.test(ch)) { 
+          if (allowedSinhala > 0) {
+            filtered += ch 
+            allowedSinhala -= 1
           }
         } else {
-          filtered += ch // Keep non-Sinhala characters
+          filtered += ch 
         }
       }
 
-      setTextInput(filtered) // Replace old input with the newly typed character
-      setAnalysisResult(null) // Clear old result because new typing has started
-      setInputError('') // Clear old error message
+      setTextInput(filtered) 
+      setAnalysisResult(null)
+      setInputError('') 
 
-      setTimeout(() => { // Wait until the textarea updates
-        const el = textareaRef.current // Get the textarea element
-        if (el) { // Check if it exists
-          el.focus() // Focus the textarea
-          el.selectionStart = el.selectionEnd = filtered.length // Move cursor to the end of the new text
+      setTimeout(() => { 
+        const el = textareaRef.current 
+        if (el) { 
+          el.focus() 
+          el.selectionStart = el.selectionEnd = filtered.length 
         }
       }, 0)
     }
   }
 
   // ================= ANALYZE =================
-  const handleAnalyze = async () => { // Function that runs when the Analyze button is clicked
+  const handleAnalyze = async () => { 
 
-    if (!textInput.trim()) return // Stop if the input is empty or only contains spaces
+    if (!textInput.trim()) return 
 
-    let hasSinhala = false // Track whether the input contains at least one Sinhala character
+    let hasSinhala = false 
 
-    for (let char of textInput) { // Check each character in the input
-      if (SINHALA_REGEX.test(char)) { // If a Sinhala character is found
-        hasSinhala = true // Mark that Sinhala text exists
-        break // Stop checking further
+    for (let char of textInput) { 
+      if (SINHALA_REGEX.test(char)) { 
+        hasSinhala = true 
+        break 
       }
     }
-    if (!hasSinhala) { // If no Sinhala character was found
-      setInputError('Please enter at least one Sinhala character') // Show an error message
+    if (!hasSinhala) { 
+      setInputError('Please enter at least one Sinhala character') 
       return // Stop analysis
     }
 
-    setIsLoading(true) // Show loading state
-    setAnalysisResult(null) // Clear old result before getting a new one
-    setInputError('') // Clear any old error message
+    setIsLoading(true) 
+    setAnalysisResult(null) 
+    setInputError('') 
 
     try {
-      const result = await predict(textInput) // Send the input text to the backend and wait for the prediction result
-      setAnalysisResult(result) // Save the returned result so it can be shown on the page
+      const result = await predict(textInput) 
+      setAnalysisResult(result) 
     } catch (err) {
-      console.error('Analyze error:', err) // Print the error in the browser console for debugging
-      setAnalysisResult(null) // Clear result if an error happens
+      console.error('Analyze error:', err) 
+      setAnalysisResult(null)
 
-      // Provide user-friendly messages depending on error type/status
-      if (err && err.status === 'network') { // If the backend cannot be reached
-        setInputError('Network error: cannot reach backend. Is the backend running?') // Show network-related error
-      } else if (err && err.status === 'invalid-json') { // If the server returned invalid JSON
-        setInputError('Server error: received an unexpected response.') // Show invalid response error
-      } else if (err && (err.status === 400 || err.status === 422)) { // If the server rejected the input
-        setInputError('Server rejected the input. Please check the text and try again.') // Show validation-related error
+      
+      if (err && err.status === 'network') { 
+        setInputError('Network error: cannot reach backend. Is the backend running?') 
+      } else if (err && err.status === 'invalid-json') { 
+        setInputError('Server error: received an unexpected response.')
+      } else if (err && (err.status === 400 || err.status === 422)) { 
+        setInputError('Server rejected the input. Please check the text and try again.') 
       } else {
-        setInputError(err.message || 'An unexpected error occurred') // Show any other error message
+        setInputError(err.message || 'An unexpected error occurred') 
       }
     } finally {
-      setIsLoading(false) // Stop loading state whether request succeeds or fails
+      setIsLoading(false) 
     }
   }
 
   // ================= CLEAR =================
   const handleClear = () => { // Function that clears everything from the input area
-    setTextInput('') // Remove the entered text
-    setAnalysisResult(null) // Remove the shown result
-    setInputError('') // Remove any shown error
+    setTextInput('') // Removing entered text
+    setAnalysisResult(null) // Removing shown result
+    setInputError('')                 
   }
 
   return ( 
-    <div className="analyze-page"> {/* Main wrapper for the analyze page */}
+    <div className="analyze-page"> 
 
       {/* ================= NAVBAR ================= */}
-      <section className="top-header"> {/* Top header section */}
-        <nav className="site-nav"> {/* Navigation bar */}
-          <div className="nav-inner"> {/* Inner container for navbar content */}
-            <div className="brand-left"> {/* Left side of navbar for logo and name */}
-              <img src={Logo} alt="SINTONE logo" className="nav-logo" /> {/* Show the website logo */}
-              <div className="brand-logo">SINTONE</div> {/* Show the website name */}
+      <section className="top-header">
+        <nav className="site-nav"> 
+          <div className="nav-inner"> 
+            <div className="brand-left"> 
+              <img src={Logo} alt="SINTONE logo" className="nav-logo" /> 
+              <div className="brand-logo">SINTONE</div> 
             </div>
 
-            <ul className="nav-links nav-right"> {/* Right side navigation links */}
+            <ul className="nav-links nav-right"> 
               <li
-                className={route === 'home' ? 'active' : ''} // Highlight Home if current route is home
+                className={route === 'home' ? 'active' : ''} 
                 onClick={() => onNavigate('home')} // Navigate to home page when clicked
               >
                 Home
               </li>
               <li
-                className={route === 'features' ? 'active' : ''} // Highlight Features if current route is features
+                className={route === 'features' ? 'active' : ''} 
                 onClick={() => onNavigate('features')} // Navigate to features page when clicked
               >
                 Features
               </li>
 
               <li
-                className={route === 'analyze' ? 'active' : ''} // Highlight Analyze if current route is analyze
+                className={route === 'analyze' ? 'active' : ''} 
                 onClick={() => onNavigate('analyze')} // Navigate to analyze page when clicked
               >
                 Analyze
@@ -319,28 +318,28 @@ function AnalyzePage({ onNavigate, route }) {
         </div>
       </header>
 
-      {/* ================= MAIN ================= */}
+     
       <div className="analyze-wrapper"> 
-        <div className="analyze-card"> {/* Card container for the analysis section */}
+        <div className="analyze-card">
 
-          {/* ================= INPUT CARD (textarea + footer) ================= */}
-          <div className="input-card"> {/* Card containing the textarea and action buttons */}
+         
+          <div className="input-card"> 
             <textarea
-              ref={textareaRef} // Connect textareaRef so the textarea can be controlled directly
-              className="text-input" // Apply textarea styling
-              placeholder="සිංහල පාඨය මෙහි ඇතුලත් කරන්න..." // Show placeholder text when input is empty
-              value={textInput} // Bind textarea value to component state
-              onChange={handleInputChange} // Run input filtering when user types
-              onPaste={handlePaste} // Run custom paste handling when user pastes text
-              onKeyDown={handleKeyDown} // Run custom key handling after results are shown
+              ref={textareaRef} 
+              className="text-input" 
+              placeholder="සිංහල පාඨය මෙහි ඇතුලත් කරන්න..." 
+              value={textInput} 
+              onChange={handleInputChange} 
+              onPaste={handlePaste} 
+              onKeyDown={handleKeyDown}
             />
 
-            {/* ================= Error message dispplayed as a pop up ================= */}
+            
 
-            <div className="input-footer"> {/* Footer below the textarea */}
-              <div className="char-count">{(textInput.match(/[\u0D80-\u0DFF]/g) || []).length} / 100 characters</div> {/* Show Sinhala character count */}
+            <div className="input-footer">
+              <div className="char-count">{(textInput.match(/[\u0D80-\u0DFF]/g) || []).length} / 100 characters</div> 
 
-              <div className="footer-actions"> {/* Area for clear and analyze buttons */}
+              <div className="footer-actions"> 
                 {textInput.trim() && ( // Show clear button only if there is text in the input
                   <button
                     className="btn-clear small" // Apply clear button styling
@@ -352,11 +351,11 @@ function AnalyzePage({ onNavigate, route }) {
                 )}
 
                 <button
-                  className="btn-analyze" // Apply analyze button styling
-                  onClick={handleAnalyze} // Run text analysis when clicked
-                  disabled={!textInput.trim() || isLoading} // Disable if input is empty or analysis is in progress
+                  className="btn-analyze" 
+                  onClick={handleAnalyze} 
+                  disabled={!textInput.trim() || isLoading} 
                 >
-                  🔍 {isLoading ? 'Analyzing...' : 'Analyze Now →'} {/* Show loading text while processing */}
+                  🔍 {isLoading ? 'Analyzing...' : 'Analyze Now →'} 
                 </button>
               </div>
             </div>
@@ -364,31 +363,31 @@ function AnalyzePage({ onNavigate, route }) {
 
           {/* ================= RESULT ================= */}
           {analysisResult && ( 
-            <div className="result-container"> {/* Container for result cards */}
+            <div className="result-container">
 
-              <div className="result-card"> {/* Card for category result */}
-                <div className="result-card-top"> {/* Top section of the result card */}
-                  <div className="result-icon">🏷️</div> {/* Icon for category */}
-                  <div className="result-meta"> {/* Text area for result heading */}
-                    <h3>Category Detection</h3> {/* Title for category result */}
+              <div className="result-card"> 
+                <div className="result-card-top"> 
+                  <div className="result-icon">🏷️</div> 
+                  <div className="result-meta"> 
+                    <h3>Category Detection</h3>
                   </div>
                 </div>
 
-                <div className="result-card-body"> {/* Main body of the result card */}
-                  <div className="result-value">{analysisResult.category}</div> {/* Show predicted category */}
+                <div className="result-card-body"> 
+                  <div className="result-value">{analysisResult.category}</div>
                 </div>
               </div>
 
-              <div className="result-card"> {/* Card for tone result */}
-                <div className="result-card-top"> {/* Top section of the result card */}
-                  <div className="result-icon">📊</div> {/* Icon for tone */}
-                  <div className="result-meta"> {/* Text area for result heading */}
-                    <h3>Tone Analysis</h3> {/* Title for tone result */}
+              <div className="result-card"> 
+                <div className="result-card-top"> 
+                  <div className="result-icon">📊</div> 
+                  <div className="result-meta"> 
+                    <h3>Tone Analysis</h3> 
                   </div>
                 </div>
 
-                <div className="result-card-body"> {/* Main body of the result card */}
-                  <div className="result-value">{analysisResult.tone || '—'}</div> {/* Show predicted tone or dash if not available */}
+                <div className="result-card-body"> 
+                  <div className="result-value">{analysisResult.tone || '—'}</div> 
                 </div>
               </div>
 
@@ -396,7 +395,7 @@ function AnalyzePage({ onNavigate, route }) {
           )}
 
           {/* ================= SUPPORT CARDS (conditional) ================= */}
-          {analysisResult && (() => { // Run this block only when a result exists
+          {analysisResult && (() => { 
             const cat = (analysisResult.category || '').toString().trim().toLowerCase() 
             const tone = (analysisResult.tone || '').toString().trim().toLowerCase() 
             const noToneValues = new Set(['no tone', 'notone', 'not tone', '—', '','none']) 
@@ -404,54 +403,54 @@ function AnalyzePage({ onNavigate, route }) {
             if (isNeutralNoTone) return null // not showing the support section for neutral no-tone results
 
             return ( 
-              <section className="support-section"> {/* Section containing support information */}
-                <div className="support-intro"> {/* Intro text for support section */}
-                  <div className="header-box"> {/* Header box */}
-                    <h2>Hate Detected</h2> {/* Warning title */}
+              <section className="support-section"> 
+                <div className="support-intro"> 
+                  <div className="header-box"> 
+                    <h2>Hate Detected</h2> 
                   </div>
 
-                  <div className="english-box"> {/* English explanation box */}
-                    <p className="support-text">Hate content detected in the input text comment. If need help and protection can contact the below places.</p> {/* English support message */}
+                  <div className="english-box"> 
+                    <p className="support-text">Hate content detected in the input text comment. If need help and protection can contact the below places.</p> 
                   </div>
 
-                  <div className="sinhala-box"> {/* Sinhala explanation box */}
-                    <p className="support-text sinhala">ඔබ ලබාදුන් පෙළ අදහස තුළ ද්වේශ සහිත අන්තර්ගතයක් හඳුනාගන්නා ලදී. ඔබට උදව් හෝ ආරක්ෂාව අවශ්‍ය නම්, පහත සඳහන් ස්ථාන සම්බන්ධ කරගත හැක.</p> {/* Sinhala support message */}
+                  <div className="sinhala-box"> 
+                    <p className="support-text sinhala">ඔබ ලබාදුන් පෙළ අදහස තුළ ද්වේශ සහිත අන්තර්ගතයක් හඳුනාගන්නා ලදී. ඔබට උදව් හෝ ආරක්ෂාව අවශ්‍ය නම්, පහත සඳහන් ස්ථාන සම්බන්ධ කරගත හැක.</p> 
                   </div>
                 </div>
 
                 <div className="support-grid"> {/* Grid of support contact cards */}
-                  <div className="support-card"> {/* Support card 1 */}
-                    <h4>🛡️ Sri Lanka CERT|CC</h4> {/* Organization name */}
-                    <p>සයිබර්/අන්තර්ජාල පැමිණිලි  සයිබර් හිරිහැර / ද්වේශ ප්‍රකාශ / අන්තර්ජාල අපයෝජන</p> {/* Description of help provided */}
-                    <p className="card-contact">☎️ 101 / +94 11 269 1692</p> {/* Contact number */}
-                    <p className="card-link">🌐 <a href="https://www.cert.gov.lk" target="_blank" rel="noreferrer">www.cert.gov.lk</a></p> {/* Website link */}
+                  <div className="support-card"> 
+                    <h4>🛡️ Sri Lanka CERT|CC</h4> 
+                    <p>සයිබර්/අන්තර්ජාල පැමිණිලි  සයිබර් හිරිහැර / ද්වේශ ප්‍රකාශ / අන්තර්ජාල අපයෝජන</p> 
+                    <p className="card-contact">☎️ 101 / +94 11 269 1692</p> 
+                    <p className="card-link">🌐 <a href="https://www.cert.gov.lk" target="_blank" rel="noreferrer">www.cert.gov.lk</a></p> 
                   </div>
 
-                  <div className="support-card"> {/* Support card 2 */}
-                    <h4>🔹 Police Cyber Crimes</h4> {/* Organization name */}
-                    <p>බරපතල තර්ජන / සංවිධානාත්මක ද්වේශ ප්‍රචාර / සයිබර් හිරිහැර</p> {/* Description of help provided */}
-                    <p className="card-contact">☎️ 011 242 2176</p> {/* Contact number */}
-                    <p className="card-link">🌐 <a href="https://www.police.lk" target="_blank" rel="noreferrer">www.police.lk</a></p> {/* Website link */}
+                  <div className="support-card"> 
+                    <h4>🔹 Police Cyber Crimes</h4> 
+                    <p>බරපතල තර්ජන / සංවිධානාත්මක ද්වේශ ප්‍රචාර / සයිබර් හිරිහැර</p>
+                    <p className="card-contact">☎️ 011 242 2176</p>
+                    <p className="card-link">🌐 <a href="https://www.police.lk" target="_blank" rel="noreferrer">www.police.lk</a></p> 
                   </div>
 
-                  <div className="support-card"> {/* Support card 3 */}
-                    <h4>⚖️ Human Rights Commission</h4> {/* Organization name */}
-                    <p>නීතිමය / මානව හිමිකම් පැමිණිලි</p> {/* Description of help provided */}
-                    <p className="card-contact">☎️ 011 250 5580</p> {/* Contact number */}
-                    <p className="card-link">🌐 <a href="https://www.hrcsl.lk" target="_blank" rel="noreferrer">www.hrcsl.lk</a></p> {/* Website link */}
+                  <div className="support-card"> 
+                    <h4>⚖️ Human Rights Commission</h4>
+                    <p>නීතිමය / මානව හිමිකම් පැමිණිලි</p> 
+                    <p className="card-contact">☎️ 011 250 5580</p> 
+                    <p className="card-link">🌐 <a href="https://www.hrcsl.lk" target="_blank" rel="noreferrer">www.hrcsl.lk</a></p> 
                   </div>
 
-                  <div className="support-card"> {/* Support card 4 */}
-                    <h4>📡 TRC</h4> {/* Organization name */}
-                    <p>මාධ්‍ය / සන්නිවේදන පැමිණිලි</p> {/* Description of help provided */}
-                    <p className="card-contact">☎️ 011 268 9345</p> {/* Contact number */}
-                    <p className="card-link">🌐 <a href="https://www.trc.gov.lk" target="_blank" rel="noreferrer">www.trc.gov.lk</a></p> {/* Website link */}
+                  <div className="support-card"> 
+                    <h4>📡 TRC</h4> 
+                    <p>මාධ්‍ය / සන්නිවේදන පැමිණිලි</p> 
+                    <p className="card-contact">☎️ 011 268 9345</p> 
+                    <p className="card-link">🌐 <a href="https://www.trc.gov.lk" target="_blank" rel="noreferrer">www.trc.gov.lk</a></p> 
                   </div>
 
-                  <div className="support-card"> {/* Support card 5 */}
-                    <h4>🚨 Emergency / Police</h4> {/* Emergency service name */}
-                    <p>හදිසි අවස්ථා</p> {/* Description */}
-                    <p className="card-contact">☎️ 119</p> {/* Emergency number */}
+                  <div className="support-card"> 
+                    <h4>🚨 Emergency / Police</h4> 
+                    <p>හදිසි අවස්ථා</p> 
+                    <p className="card-contact">☎️ 119</p> 
                   </div>
 
                 </div>
